@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load cart %}
+
+{% load custom_filter%}
+<div class="container-fluid mt-3">
+
+    <div class="row ">
+
+        <div class="  col-lg-3  ">
+
+            <div class= "list-group mx-auto position-fixed w-25   ">
+                <button type = "button" class="list-group-item list-group-item-action active ">
+                <a href="/" class="list-group-item list-group-item-action active">
+                     All products
+                </a>
+                </button>
+                {% for category in categories %}
+                <button type = "button" class ="list-group-item list-group-item-action active ">
+                <a href="/?category={{category.id}} " class="list-group-item list-group-item-action active">
+                    {{category.name}}
+                </a>
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <!--all products-->
+
+        <div id='product' class=" col-lg-8 mx-auto ">
+
+
+            <div class="row  ">
+                {% for products in product %}
+                <div class="card border-info mr-auto mb-3 " id = {{products.id}}  style="width: 18rem;">
+                    <img src="{{products.image.url}}" class="card-img-top " height="225px" alt="...">
+                    <div class="card-body m-2">
+                        <h5 class="card-title">{{products.name}}</h5>
+                        <p class="card-text"><b>{{products.price|currency}}</b></p>
+                        <p class="card-text">{{products.description}}</p>
+
+                      <!--  {{ products|is_in_cart:request.session.cart}}-->
+
+                    </div>
+
+
+                    <div class="card-footer no-gutters p-0">
+
+                        {% if  products|is_in_cart:request.session.cart %}
+
+                       <div class ="row  no-gutters border border-primary">
+
+                         <form action="/#{{products.id}}" class="col-2 " method="POST">
+                             {%csrf_token%}
+                             <input hidden type =" text" name="products" value='{{ products.id }}'>
+                             <input hidden type =" text" name="remove" value='True'>
+
+                          <input type="submit" value=" - " class="btn btn-block btn-info"  >
+                         </form>
+
+
+                      <div class ="text-center col"> {{products|cart_quantity:request.session.cart}} in Cart </div>
+
+                         <form action="/#{{products.id}}" class="col-2 " method="POST">
+                             {%csrf_token%}
+                             <input hidden type =" text" name="products" value='{{ products.id }}'>
+                          <input type="submit" value=" + " class="btn btn-block btn-info"  >
+                         </form>
+
+                       </div>
+
+
+                        {%  else %}
+                        <form action="/#{{products.id}}" method="POST" class="btn-block ">
+                            {% csrf_token %}
+                            <input hidden type =" text" name="products" value='{{ products.id }}'>
+                            <input type="submit" class=" float-right btn btn-primary btn-block  " value="Add to Cart">
+                        </form>
+                       {% endif %}
+
+                    </div>
+
+                </div>
+                {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock%}

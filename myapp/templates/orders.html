@@ -1,0 +1,54 @@
+{%  extends 'base.html' %}
+
+{%  block content %}
+
+{% load cart %}
+
+{% load custom_filter %}
+<div class="container">
+    <div class="border rounded border-primary p-4 m-4">
+        <p class="display-4 pl-4 ml-4 text-center alert-primary"><b>Your Orders</b></p>
+
+        <table class = "table">
+            <thead >
+            <tr >
+                <th>Sno.</th>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Date</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Payment Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for order in orders %}
+            <tr >
+                <td> {{forloop.counter}}</td>
+                <td><img style="height :80px" class="rounded circle " src="{{order.products.image.url}}" alt=""></td>
+                <td>{{order.products.name}}</td>
+                <td>{{order.price|currency}}</td>
+                <td>{{order.date}}</td>
+                <td>{{order.quantity}}</td>
+                {% if order.completed %}
+                <td><small class ="badge badge-success">Completed</small></td>
+                {% else %}
+                <td><small class ="badge badge-danger">pending</small></td>
+                 {% endif %}
+                <td>{{order.quantity|multiply:order.price|currency}}</td>
+                {%if order.payment%}
+                <td><small class ="badge badge-success">Payment Completed</small></td>
+                 {% else %}
+                <td><small class ="badge badge-success">Payment pending</small></td>
+                 {% endif %}
+            </tr>
+            {% endfor %}
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
